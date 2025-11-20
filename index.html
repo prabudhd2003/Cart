@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gifts for Mom</title>
+    <style>
+        /* Simple Styling for a clean look */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* Grid Layout for the Cards */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Individual Card Styling */
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-container {
+            height: 300px; /* Fixed height for consistency */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .image-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .details {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .title {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .price {
+            color: #B12704; /* Amazon Price Red */
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #FFD814;
+            color: #111;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #FCD200;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #F7CA00;
+            cursor: pointer;
+        }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 600px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Items for Mom ❤️</h1>
+    <p class="subtitle">Here is the list of gifts I found for you.</p>
+
+    <div class="gallery" id="gallery-root">
+        </div>
+
+    <script>
+        // --- IMPORTANT: YOUR PRODUCT LIST ---
+        // I have pre-filled the links. 
+        // For the IMAGES ('image' field), Amazon links expire.
+        // BEST METHOD: Open each Amazon link, RIGHT CLICK the main image, 
+        // select "Copy Image Address", and paste it inside the quotes below.
+        
+        const products = [
+            {
+                title: "Coach Cammie Chain Tote",
+                link: "https://www.amazon.com/dp/B0C3L3P69T",
+                image: "https://m.media-amazon.com/images/I/71-Wd+j1ZWL._AC_SY695_.jpg", // Example Placeholder
+                price: "Check Price"
+            },
+            {
+                title: "Mystery Item 2 (Update Name)",
+                link: "https://www.amazon.com/dp/B0FCJWBY1C",
+                image: "https://via.placeholder.com/300?text=Image+Not+Found", 
+                price: "Check Price"
+            },
+            {
+                title: "Mystery Item 3 (Update Name)",
+                link: "https://www.amazon.com/dp/B0FCK8VX6D",
+                image: "https://via.placeholder.com/300?text=Image+Not+Found",
+                price: "Check Price"
+            },
+            {
+                title: "Michael Kors Marilyn Medium Satchel",
+                link: "https://www.amazon.com/dp/B0DQ2D7VX4",
+                image: "https://m.media-amazon.com/images/I/51tEKwRVKZL._AC_SX679_.jpg", // Found from search
+                price: "Check Price"
+            },
+            {
+                title: "Michael Kors Flora Large Tote",
+                link: "https://www.amazon.com/dp/B0F22VQ395",
+                image: "https://via.placeholder.com/300?text=Update+Image+Link",
+                price: "Check Price"
+            },
+            {
+                title: "Michael Kors Jacquelyn Medium Chain Tote",
+                link: "https://www.amazon.com/dp/B0CCJ7M69Q",
+                image: "https://via.placeholder.com/300?text=Update+Image+Link",
+                price: "Check Price"
+            },
+            {
+                title: "Michael Kors Winston Top-Zip Tote",
+                link: "https://www.amazon.com/dp/B0BV2F5NC1",
+                image: "https://via.placeholder.com/300?text=Update+Image+Link",
+                price: "Check Price"
+            },
+            {
+                title: "Michael Kors Marilyn Medium Top-Zip Tote",
+                link: "https://www.amazon.com/dp/B09QSPB6CH",
+                image: "https://via.placeholder.com/300?text=Update+Image+Link",
+                price: "Check Price"
+            },
+            {
+                title: "MKP Collection Crossbody Bag",
+                link: "https://www.amazon.com/dp/B0DRCRBWYR",
+                image: "https://m.media-amazon.com/images/I/51nkHQJ1TQL._AC_SY695_.jpg",
+                price: "Check Price"
+            }
+        ];
+
+        // This code builds the cards automatically
+        const gallery = document.getElementById('gallery-root');
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="image-container">
+                    <img src="${product.image}" alt="${product.title}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                </div>
+                <div class="details">
+                    <div class="title">${product.title}</div>
+                    <div class="price">${product.price}</div>
+                    <a href="${product.link}" target="_blank" class="btn">View on Amazon</a>
+                </div>
+            `;
+            gallery.appendChild(card);
+        });
+    </script>
+</body>
+</html>
