@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gifts for Mom</title>
     <style>
-        /* Simple Styling for a clean look */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f9f9f9;
@@ -14,54 +13,61 @@
             text-align: center;
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
+        h1 { color: #333; margin-bottom: 10px; }
+        p.subtitle { color: #666; margin-bottom: 40px; }
 
-        p.subtitle {
-            color: #666;
-            margin-bottom: 40px;
-        }
-
-        /* Grid Layout for the Cards */
+        /* Grid Layout */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
+            padding-bottom: 50px;
         }
 
-        /* Individual Card Styling */
+        /* Card Styling */
         .card {
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
-            transition: transform 0.2s;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .image-container {
-            height: 300px; /* Fixed height for consistency */
+        /* THE SLIDESHOW CONTAINER */
+        .image-scroll-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            height: 350px;
             background-color: #fff;
-            padding: 20px;
-            border-bottom: 1px solid #eee;
+            scrollbar-width: none; /* Firefox: Hide scrollbar */
+        }
+        
+        /* Hide scrollbar for Chrome/Safari */
+        .image-scroll-container::-webkit-scrollbar {
+            display: none;
         }
 
-        .image-container img {
-            max-height: 100%;
-            max-width: 100%;
+        .image-scroll-container img {
+            scroll-snap-align: center;
+            min-width: 100%;
+            height: 100%;
             object-fit: contain;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* "Swipe" indicator hint */
+        .swipe-hint {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            font-style: italic;
         }
 
         .details {
@@ -70,131 +76,155 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            border-top: 1px solid #eee;
         }
 
         .title {
             font-size: 1.1em;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-weight: 600;
-            line-height: 1.4;
         }
 
         .price {
-            color: #B12704; /* Amazon Price Red */
-            font-size: 1.2em;
+            color: #B12704;
+            font-size: 1.3em;
             font-weight: bold;
             margin-bottom: 15px;
         }
 
         .btn {
-            display: inline-block;
+            display: block;
             background-color: #FFD814;
             color: #111;
             text-decoration: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 20px;
             border: 1px solid #FCD200;
             font-weight: 500;
-            transition: background 0.2s;
         }
+        
+        .btn:hover { background-color: #F7CA00; }
 
-        .btn:hover {
-            background-color: #F7CA00;
-            cursor: pointer;
-        }
-
-        /* Responsive adjustments for mobile */
+        /* Mobile Fix */
         @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: 1fr;
-            }
+            .gallery { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
     <h1>Items for Mom ❤️</h1>
-    <p class="subtitle">Here is the list of gifts I found for you.</p>
+    <p class="subtitle">Swipe the images to see more angles!</p>
 
-    <div class="gallery" id="gallery-root">
-        </div>
+    <div class="gallery" id="gallery-root"></div>
 
     <script>
-        // --- IMPORTANT: YOUR PRODUCT LIST ---
-        // I have pre-filled the links. 
-        // For the IMAGES ('image' field), Amazon links expire.
-        // BEST METHOD: Open each Amazon link, RIGHT CLICK the main image, 
-        // select "Copy Image Address", and paste it inside the quotes below.
-        
+        // I have cleaned up your data structure. 
+        // Instead of image1, image2, I put them in a list ["link1", "link2"]
+        // This makes the slideshow work automatically.
+
         const products = [
             {
                 title: "Coach Cammie Chain Tote",
                 link: "https://www.amazon.com/dp/B0C3L3P69T",
-                image: "https://m.media-amazon.com/images/I/71-Wd+j1ZWL._AC_SY695_.jpg", // Example Placeholder
-                price: "Check Price"
+                price: "₹16,454",
+                images: [
+                    "https://m.media-amazon.com/images/I/81vJzIjpYwL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/71znAWpTu9L._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/91-QMniQ9xL._AC_SY695_.jpg"
+                ]
             },
             {
-                title: "Mystery Item 2 (Update Name)",
+                title: "Michael Kors Laila Medium Tote Bag",
                 link: "https://www.amazon.com/dp/B0FCJWBY1C",
-                image: "https://via.placeholder.com/300?text=Image+Not+Found", 
-                price: "Check Price"
+                price: "₹9,632",
+                images: [
+                    "https://m.media-amazon.com/images/I/81Hx5d3lt-L._AC_SY695_.jpg", 
+                    "https://m.media-amazon.com/images/I/61QqzTajyAL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/81IAvmXwLeL._AC_SY695_.jpg"
+                ]
             },
             {
-                title: "Mystery Item 3 (Update Name)",
+                title: "Michael Kors Emilia Medium Satchel",
                 link: "https://www.amazon.com/dp/B0FCK8VX6D",
-                image: "https://via.placeholder.com/300?text=Image+Not+Found",
-                price: "Check Price"
+                price: "₹12,950",
+                images: [
+                    "https://m.media-amazon.com/images/I/71dr74GxRIL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/61Y+8mY17cL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/71HcFEdstvL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/71l9UBmlIbL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/71BgBJp8kfL._AC_SY695_.jpg"
+                ]
             },
             {
                 title: "Michael Kors Marilyn Medium Satchel",
                 link: "https://www.amazon.com/dp/B0DQ2D7VX4",
-                image: "https://m.media-amazon.com/images/I/51tEKwRVKZL._AC_SX679_.jpg", // Found from search
-                price: "Check Price"
+                price: "₹12,568",
+                images: [
+                    "https://m.media-amazon.com/images/I/51tEKwRVKZL._AC_SX679_.jpg",
+                    "https://m.media-amazon.com/images/I/81DKEqLtQWL._AC_SX695_.jpg"
+                ]
             },
             {
                 title: "Michael Kors Flora Large Tote",
                 link: "https://www.amazon.com/dp/B0F22VQ395",
-                image: "https://via.placeholder.com/300?text=Update+Image+Link",
-                price: "Check Price"
+                price: "Check Price",
+                images: [
+                    "https://m.media-amazon.com/images/I/81md0c5PztL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/81m0ceIwyqL._AC_SY695_.jpg"
+                ]
             },
             {
                 title: "Michael Kors Jacquelyn Medium Chain Tote",
                 link: "https://www.amazon.com/dp/B0CCJ7M69Q",
-                image: "https://via.placeholder.com/300?text=Update+Image+Link",
-                price: "Check Price"
+                price: "₹10,910",
+                images: [
+                    "https://m.media-amazon.com/images/I/71n+vFUR12L._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/71YnQKn7DTL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/71dM+Soxe-L._AC_SY695_.jpg"
+                ]
             },
             {
                 title: "Michael Kors Winston Top-Zip Tote",
                 link: "https://www.amazon.com/dp/B0BV2F5NC1",
-                image: "https://via.placeholder.com/300?text=Update+Image+Link",
-                price: "Check Price"
+                price: "₹8,870",
+                images: [
+                    "https://m.media-amazon.com/images/I/61fsoaIoNnL._AC_SY695_.jpg"
+                ]
             },
             {
                 title: "Michael Kors Marilyn Medium Top-Zip Tote",
                 link: "https://www.amazon.com/dp/B09QSPB6CH",
-                image: "https://via.placeholder.com/300?text=Update+Image+Link",
-                price: "Check Price"
-            },
-            {
-                title: "MKP Collection Crossbody Bag",
-                link: "https://www.amazon.com/dp/B0DRCRBWYR",
-                image: "https://m.media-amazon.com/images/I/51nkHQJ1TQL._AC_SY695_.jpg",
-                price: "Check Price"
+                price: "₹8,071",
+                images: [
+                    "https://m.media-amazon.com/images/I/71dNYw6rM1L._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/61wZ7iuzOKL._AC_SY695_.jpg",
+                    "https://m.media-amazon.com/images/I/718FTSvl1ML._AC_SY695_.jpg"
+                ]
             }
         ];
 
-        // This code builds the cards automatically
         const gallery = document.getElementById('gallery-root');
 
         products.forEach(product => {
+            // Create the list of images for this card
+            let imagesHtml = '';
+            product.images.forEach(imgUrl => {
+                imagesHtml += `<img src="${imgUrl}" onerror="this.style.display='none'">`;
+            });
+
+            // Determine if we should show a "swipe" hint (only if >1 image)
+            let swipeHint = product.images.length > 1 ? '<div class="swipe-hint">← Swipe image for more →</div>' : '';
+
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
-                <div class="image-container">
-                    <img src="${product.image}" alt="${product.title}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                <div class="image-scroll-container">
+                    ${imagesHtml}
                 </div>
                 <div class="details">
+                    ${swipeHint}
                     <div class="title">${product.title}</div>
                     <div class="price">${product.price}</div>
                     <a href="${product.link}" target="_blank" class="btn">View on Amazon</a>
